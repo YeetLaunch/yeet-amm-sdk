@@ -1,5 +1,8 @@
 # @yeetlaunch/yeet-amm-sdk
 
+[![npm](https://img.shields.io/npm/v/@yeetlaunch/yeet-amm-sdk?color=39FF14&logo=npm)](https://www.npmjs.com/package/@yeetlaunch/yeet-amm-sdk)
+[![license](https://img.shields.io/npm/l/@yeetlaunch/yeet-amm-sdk?color=14F195)](./LICENSE)
+
 TypeScript SDK for the [YeetAMM](https://yeetlaunch.io/dev) program on Solana —
 PDA derivation, swap instruction builders, on-chain account decoding, error
 decoding, decimal helpers, and a thin REST client.
@@ -10,16 +13,6 @@ server, and `buy()`/`sell()` build the on-chain swap with a server-derived
 minimum-out plus the on-chain stale-quote guard.
 
 ## Install
-
-> ⏳ **Not on npm yet.** Until the first npm release, install straight from
-> GitHub — the package compiles itself on install (via the `prepare` script), so
-> the import paths work the same:
->
-> ```bash
-> npm install github:YeetLaunch/yeet-amm-sdk @solana/web3.js @solana/spl-token
-> ```
-
-Once published, the install will be:
 
 ```bash
 npm install @yeetlaunch/yeet-amm-sdk @solana/web3.js @solana/spl-token
