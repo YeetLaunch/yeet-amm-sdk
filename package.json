@@ -16,6 +16,7 @@
   "files": ["dist", "README.md"],
   "scripts": {
     "build": "tsc -p tsconfig.json",
+    "prepare": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "keywords": ["solana", "yeetamm", "yeetlaunch", "amm", "dex", "sdk"],

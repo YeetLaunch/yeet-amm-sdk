@@ -11,6 +11,16 @@ minimum-out plus the on-chain stale-quote guard.
 
 ## Install
 
+> ⏳ **Not on npm yet.** Until the first npm release, install straight from
+> GitHub — the package compiles itself on install (via the `prepare` script), so
+> the import paths work the same:
+>
+> ```bash
+> npm install github:YeetLaunch/yeet-amm-sdk @solana/web3.js @solana/spl-token
+> ```
+
+Once published, the install will be:
+
 ```bash
 npm install @yeetlaunch/yeet-amm-sdk @solana/web3.js @solana/spl-token
 ```
@@ -100,6 +110,14 @@ for the on-chain layout, discriminators, and indexing guidance.
 
 ## Status
 
-`v0.1` — read + quote + swap-instruction building are implemented and verified
-against the program. On the roadmap: turnkey buy/sell transaction assembly
-(wSOL wrapping), `createToken`, and exact-out convenience wrappers.
+`v0.1` — implemented and verified against the program: pool reads, quotes,
+swap-instruction building, and turnkey `buy`/`sell` transaction assembly with
+automatic wSOL wrap/unwrap (`buildBuyTransaction` / `buildSellTransaction`).
+
+On the roadmap: `createToken`, and exact-out convenience wrappers on the client
+(the `swap_base_out` instruction builder is already exposed via
+`buildSwapBaseOut`).
+
+**Network:** YeetAMM currently runs on **devnet**. The mainnet program address
+above is reserved but **not yet deployed** — see the
+[developer portal](https://yeetlaunch.io/dev) for live status.
