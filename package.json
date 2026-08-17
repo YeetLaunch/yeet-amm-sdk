@@ -1,7 +1,7 @@
 {
   "name": "@yeetlaunch/yeet-amm-sdk",
-  "version": "0.1.0",
-  "description": "TypeScript SDK for the YeetAMM program — PDA derivation, instruction builders, account decoding, error decoding, and a thin REST client. Pricing is served by the YeetLaunch API; no curve math is included.",
+  "version": "0.1.1",
+  "description": "TypeScript SDK for the YeetAMM program \u2014 PDA derivation, instruction builders, account decoding, error decoding, and a thin REST client. Pricing is served by the YeetLaunch API; no curve math is included.",
   "license": "MIT",
   "type": "module",
   "main": "./dist/index.js",
@@ -13,13 +13,23 @@
       "import": "./dist/index.js"
     }
   },
-  "files": ["dist", "README.md"],
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "prepare": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
-  "keywords": ["solana", "yeetamm", "yeetlaunch", "amm", "dex", "sdk"],
+  "keywords": [
+    "solana",
+    "yeetamm",
+    "yeetlaunch",
+    "amm",
+    "dex",
+    "sdk"
+  ],
   "peerDependencies": {
     "@solana/web3.js": "^1.87.0",
     "@solana/spl-token": "^0.4.0"

@@ -101,6 +101,24 @@ its rent.
 See the [DEX Integration Spec](https://yeetlaunch.io/docs/yeet-amm-integration.md)
 for the on-chain layout, discriminators, and indexing guidance.
 
+### Pool depth and quote sizing
+
+YeetAMM pools price off **real + virtual reserves**. The virtual reserves are
+the immutable launch anchor and are published on every pool as
+`metadata.virtualReserveA` / `metadata.virtualReserveB`; they are part of the
+depth backing a quote, not a display artifact.
+
+This matters when sizing trades or rendering liquidity. A recently graduated
+pool can hold a very small real reserve while quoting against a much larger
+anchor — one live pool held 0.0039 SOL of real reserve against a 22 SOL
+anchor, so its effective depth was 22.0039 SOL. Judging that pool by its real
+reserve alone understates its depth by three orders of magnitude.
+
+`GET /quote` rejects any single route whose input exceeds 5% of a pool's
+effective depth, returning `No route available for requested pair`. If you get
+that error on a pair you can see in `GET /pools`, the pair is routable — the
+amount is simply too large for one route against that pool.
+
 ## Status
 
 `v0.1` — implemented and verified against the program: pool reads, quotes,
@@ -111,6 +129,8 @@ On the roadmap: `createToken`, and exact-out convenience wrappers on the client
 (the `swap_base_out` instruction builder is already exposed via
 `buildSwapBaseOut`).
 
-**Network:** YeetAMM currently runs on **devnet**. The mainnet program address
-above is reserved but **not yet deployed** — see the
-[developer portal](https://yeetlaunch.io/dev) for live status.
+**Network:** YeetAMM is **live on mainnet-beta**. The mainnet program
+`yeetaecvxpd7DFzZAYTEYracRt1WYJ7DfMVjEeEt2Cp` is deployed and executable, and
+is the one to integrate against. The devnet program
+`yeetMcJ7nBfMZiQV8ns4h5m3WeVekT1ySq27bMWWfio` remains available for testing.
+See the [developer portal](https://yeetlaunch.io/dev) for live status.
