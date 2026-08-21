@@ -29,6 +29,21 @@ const OFFSET = {
   gradThreshold: 521,
   gradSlot: 529,
   quoteMint: 537,
+
+  // ── Adaptive post-graduation sell cap ────────────────────────────────
+  // These three carry everything needed to compute the live sell allowance
+  // WITHOUT an RPC round trip, which matters for routers (Jupiter's Amm::quote
+  // cannot make network calls mid-route-search). Previously undecoded here, so
+  // an SDK consumer had no way to model the cap and had to guess or poll.
+  //
+  // ⚠ adaptiveSellCapBps lives in the account field named
+  // `creator_fee_share_bps`. That is NOT a fee share. state.rs:86 calls it a
+  // "legacy compatibility field ... reused as the persisted adaptive
+  // post-graduation sell-cap state". Anyone reading the IDL at face value will
+  // mis-model it as a creator fee — hence the rename here.
+  adaptiveSellCapBps: 284,        // u16, stored in creator_fee_share_bps
+  slotSellWindow: 512,            // u64, packs (slot << 16) | consumed_bps
+  lastSellCapUpdateSlot: 577,     // u64, anchor for lazy recovery
 } as const;
 
 function readPubkey(buf: Buffer, off: number): PublicKey {
@@ -80,6 +95,9 @@ export function decodePool(address: PublicKey, data: Buffer | Uint8Array): Pool 
     virtualReserveA: readU64(buf, OFFSET.virtualReserveA),
     virtualReserveB: readU64(buf, OFFSET.virtualReserveB),
     creationSlot: readU64(buf, OFFSET.creationSlot),
+    adaptiveSellCapBps: readU16(buf, OFFSET.adaptiveSellCapBps),
+    slotSellWindow: readU64(buf, OFFSET.slotSellWindow),
+    lastSellCapUpdateSlot: readU64(buf, OFFSET.lastSellCapUpdateSlot),
   };
 }
 

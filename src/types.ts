@@ -37,6 +37,20 @@ export interface Pool {
   virtualReserveA: bigint;
   virtualReserveB: bigint;
   creationSlot: bigint;
+
+  /**
+   * Live adaptive post-graduation sell-cap allowance, in bps of the input
+   * reserve. Ceiling 500 (5%), floor 50 (0.5%) once any capacity is consumed.
+   *
+   * ⚠ Stored on-chain in the field named `creator_fee_share_bps`. It is NOT a
+   * creator fee share — that field is legacy and was reused for this state.
+   * Read the IDL name literally and you will mis-model it.
+   */
+  adaptiveSellCapBps: number;
+  /** Packs `(slot << 16) | consumed_bps` — the same-slot aggregate cap. */
+  slotSellWindow: bigint;
+  /** Anchor slot for lazy cap recovery (+50 bps per 32 slots, capped at 500). */
+  lastSellCapUpdateSlot: bigint;
 }
 
 /** SPL token metadata for a market's base token (from the YeetLaunch API). */

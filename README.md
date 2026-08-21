@@ -101,6 +101,44 @@ its rent.
 See the [DEX Integration Spec](https://yeetlaunch.io/docs/yeet-amm-integration.md)
 for the on-chain layout, discriminators, and indexing guidance.
 
+### Which side is SOL? Do not assume
+
+**Pool reserves are not always `(token, SOL)`.** Solana orders a pool's two
+mints by their **raw 32 bytes**, not by how the address looks in base58, so
+wSOL lands on side A for some pools and side B for others. There is no way to
+tell by looking at the address.
+
+Every pool in `GET /pools` publishes which side it is:
+
+```js
+const pool = pools.find(p => p.id === poolAddress);
+const solIsA = pool.metadata.quoteReserveSide === 'a';   // 'a' | 'b'
+
+const solReserve   = solIsA ? pool.reserveA : pool.reserveB;
+const tokenReserve = solIsA ? pool.reserveB : pool.reserveA;
+```
+
+Reading the pool account directly instead? Compare the mints, never the
+position:
+
+```js
+const solIsA = pool.tokenMintA === 'So11111111111111111111111111111111111111112';
+```
+
+Assuming a fixed side is the single most common integration bug we see, and
+it is a quiet one: every pool with the layout you assumed works perfectly,
+so it looks correct until a pool with the other layout appears. Then that
+pool renders with its token reserve in the SOL field — a market with a
+fraction of a SOL of real liquidity displays as hundreds of millions of SOL,
+and any price derived from it is inverted by the same mistake.
+
+If a single market looks absurd while its neighbours look fine, check the
+side before anything else.
+
+Quotes from `GET /quote` and from the app quote API take explicit
+`inputMint` / `outputMint` and resolve the orientation server-side, so they
+are unaffected. This only bites code that reads reserves itself.
+
 ### Pool depth and quote sizing
 
 YeetAMM pools price off **real + virtual reserves**. The virtual reserves are
