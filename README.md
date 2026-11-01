@@ -84,9 +84,44 @@ its rent.
 - **Decode** — `decodePool`, `isCanonicalPool`.
 - **Errors** — `decodeYeetAmmError`, `getYeetAmmError`, `YEET_AMM_ERRORS`.
 - **Decimals** — `toRawAmount`, `fromRawAmount`, `fromRawToNumber`.
-- **REST** — `RestClient` (quotes, snapshots, pools, tokens, trades).
+- **REST** — `RestClient` (quotes, snapshots, pools, tokens, trades, launch links).
 - **Types** — `Pool`, `Token`, `SwapQuote`/`Quote`, `Launch`, `Creator`,
   `Liquidity`, `GraduationProgress`, `CreatorFees`.
+
+## Launch a token from your site
+
+Create a signing link on your server, send the creator to it, then poll for the
+result. The creator approves in their own wallet on yeetlaunch.io and pays the
+0.03 SOL fee, so your site never handles keys or funds.
+
+```ts
+import { RestClient } from '@yeetlaunch/yeet-amm-sdk';
+
+const rest = new RestClient();
+
+const link = await rest.createLaunchLink({
+  name: 'Moon Cat',
+  symbol: 'MOONCAT',
+  description: 'A cartoon astronaut cat.',
+  logoPrompt: 'a cartoon cat in an astronaut helmet',
+  wallet: creatorWallet,
+  source: 'yoursite',
+});
+
+// Send the creator to link.url, then poll from your server.
+const status = await rest.getLaunchStatus(link.id, { wallet: creatorWallet });
+if (status.state === 'live') console.log(status.mintAddress, status.tokenUrl);
+```
+
+- `live` means the token and its pool exist. Check `creatorWallet`.
+- `launching` and `unknown` mean keep polling. **Neither proves the fee wasn't
+  paid.** Never start another launch automatically because of these states or a
+  failed status call, because a retry could charge the creator twice.
+- Call both methods from a server. Browsers on other sites get a 403.
+- Links last 15 minutes, and each wallet can start 5 launches an hour and 10 a
+  day. Status records last 7 days and are best effort.
+- `returnUrl` adds a button back to your site, and the site must be approved by
+  YeetLaunch first.
 
 ## Constants
 
@@ -163,9 +198,8 @@ amount is simply too large for one route against that pool.
 swap-instruction building, and turnkey `buy`/`sell` transaction assembly with
 automatic wSOL wrap/unwrap (`buildBuyTransaction` / `buildSellTransaction`).
 
-On the roadmap: `createToken`, and exact-out convenience wrappers on the client
-(the `swap_base_out` instruction builder is already exposed via
-`buildSwapBaseOut`).
+On the roadmap: exact-out convenience wrappers on the client (the
+`swap_base_out` instruction builder is already exposed via `buildSwapBaseOut`).
 
 **Network:** YeetAMM is **live on mainnet-beta**. The mainnet program
 `yeetaecvxpd7DFzZAYTEYracRt1WYJ7DfMVjEeEt2Cp` is deployed and executable, and

@@ -1,6 +1,6 @@
 {
   "name": "@yeetlaunch/yeet-amm-sdk",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "TypeScript SDK for the YeetAMM program \u2014 PDA derivation, instruction builders, account decoding, error decoding, and a thin REST client. Pricing is served by the YeetLaunch API; no curve math is included.",
   "license": "MIT",
   "type": "module",
