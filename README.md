@@ -94,6 +94,10 @@ Create a signing link on your server, send the creator to it, then poll for the
 result. The creator approves in their own wallet on yeetlaunch.io and pays the
 0.03 SOL fee, so your site never handles keys or funds.
 
+Full guide, including the plain HTTP calls:
+[Launch a token on YeetLaunch from your site](https://github.com/YeetLaunch/docs/blob/main/docs/LAUNCH_FROM_YOUR_SITE.md).
+To create a token yourself, use [yeetlaunch.io/token-creator](https://yeetlaunch.io/token-creator).
+
 ```ts
 import { RestClient } from '@yeetlaunch/yeet-amm-sdk';
 
